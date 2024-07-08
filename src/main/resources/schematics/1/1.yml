@@ -1,0 +1,6 @@
+1:
+  width: 8
+  length: 8
+  height: 8
+  entryDirection: "NORTH"
+  exitDirection: "SOUTH"

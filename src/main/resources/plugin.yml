@@ -1,0 +1,14 @@
+name: Rooms
+version: '${project.version}'
+main: me.fiveeus.rooms.Rooms
+api-version: '1.20'
+commands:
+  chunks:
+    description: Chunks command
+    usage: /<command>
+    aliases: [c]
+depend:
+  - WorldEdit
+
+
+
