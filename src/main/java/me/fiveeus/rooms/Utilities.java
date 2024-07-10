@@ -8,11 +8,11 @@ import java.util.logging.Level;
 
 public class Utilities {
 
-    private static final String noPermission = Rooms.getConfigInst().getString("no-permission");
+    private static final String noPermission = ChatColor.translateAlternateColorCodes('&', Rooms.getConfigInst().getString("no-permission"));
 
     public static boolean checkPermission(CommandSender sender, String permission) {
 
-        if (noPermission == null) {
+        if (noPermission.isEmpty()) {
             Logger.log(Level.SEVERE, "no permission message specified in config.yml");
             return false;
         }

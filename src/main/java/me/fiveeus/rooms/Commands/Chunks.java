@@ -9,6 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+
 public class Chunks implements CommandExecutor {
 
     private static final String PREFIX = Utilities.getPrefix();
@@ -132,8 +134,27 @@ public class Chunks implements CommandExecutor {
 
                 if (!chunkGenerator.unloadLevel(args[1])) {
                     player.sendMessage(ChatColor.RED + "ERROR: Level not loaded or syntax error");
+                    return true;
                 }
+
                 player.sendMessage(Utilities.getPrefix() + " " + ChatColor.GRAY + "Unloaded level " + ChatColor.AQUA + args[1]);
+
+                break;
+
+            case "edit":
+
+                if (args.length < 2) {
+                    sendHelpMessage(player);
+                    player.sendMessage(ChatColor.RED + "ERROR: No label specified");
+                    return true;
+                }
+
+                label = args[1];
+
+                File folder = new File(args[1]);
+
+
+
 
                 break;
 

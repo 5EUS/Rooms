@@ -16,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -30,9 +31,11 @@ public class Chunk {
 
     private final String level;
 
-    private List<String> entryPoints;
+    private List<Direction.Directions> entryDirection;
 
-    private List<String> exitPoints;
+    private List<Direction.Directions> exitDirection;
+
+    private List<Direction.Directions> holes;
 
     private final String chunkName;
 
@@ -79,7 +82,6 @@ public class Chunk {
 
             // check if section exists
             if (!(value instanceof ConfigurationSection)) {
-                Logger.log(Level.SEVERE, "Invalid configuration format for chunk " + chunkName + ": " + key);
                 continue;
             }
 
@@ -91,6 +93,10 @@ public class Chunk {
                 continue;
             }
 
+            if (!key.equalsIgnoreCase(standardName)) {
+                continue;
+            }
+
             // load chunk components
             Logger.log(Level.INFO, "Loading component " + key + " for level " + level);
             ConfigurationSection section = config.getConfigurationSection(key);
@@ -98,8 +104,30 @@ public class Chunk {
             this.width = section.getInt("width");
             this.length = section.getInt("length");
             this.height = section.getInt("height");
-            this.entryPoints = section.getStringList("entryPoints");
-            this.exitPoints = section.getStringList("exitPoints");
+            this.entryDirection = new ArrayList<>();
+            List<String> entryDirectionS = section.getStringList("entryDirection");
+            if (entryDirectionS.isEmpty()) {
+                Logger.log(Level.SEVERE, "No entry points found for chunk " + chunkName);
+            }
+            for (String entryDirection : entryDirectionS) {
+                this.entryDirection.add(Direction.fromString(entryDirection));
+            }
+            this.exitDirection = new ArrayList<>();
+            List<String> exitDirectionS = section.getStringList("exitDirection");
+            if (exitDirectionS.isEmpty()) {
+                Logger.log(Level.SEVERE, "No entry points found for chunk " + chunkName);
+            }
+            for (String exitDirection : exitDirectionS) {
+                this.exitDirection.add(Direction.fromString(exitDirection));
+            }
+            this.holes = new ArrayList<>();
+            holes.addAll(this.entryDirection);
+            holes.addAll(this.exitDirection);
+            Logger.log(Level.INFO, "Chunk " + chunkName + " width set to " + width);
+            Logger.log(Level.INFO, "Chunk " + chunkName + " length set to " + length);
+            Logger.log(Level.INFO, "Chunk " + chunkName + " height set to " + height);
+            Logger.log(Level.INFO, "Chunk " + chunkName + " entry points set to " + entryDirection);
+            Logger.log(Level.INFO, "Chunk " + chunkName + " exit points set to " + exitDirection);
             Logger.log(Level.INFO, "Loaded chunk " + chunkName + " components from yml.");
 
         }
@@ -155,12 +183,12 @@ public class Chunk {
 
     }
 
-    public List<String> getEntryPoints() {
-        return entryPoints;
+    public List<Direction.Directions> getEntryDirections() {
+        return entryDirection;
     }
 
-    public List<String> getExitPoints() {
-        return exitPoints;
+    public List<Direction.Directions> getExitDirections() {
+        return exitDirection;
     }
 
     public int getWidth() {
@@ -189,5 +217,9 @@ public class Chunk {
 
     public String getFullName() {
         return level + "_" + chunkName;
+    }
+
+    public List<Direction.Directions> getHoles() {
+        return holes;
     }
 }

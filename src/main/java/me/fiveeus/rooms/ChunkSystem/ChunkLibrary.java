@@ -1,5 +1,6 @@
 package me.fiveeus.rooms.ChunkSystem;
 
+import com.sk89q.worldedit.session.ClipboardHolder;
 import me.fiveeus.rooms.Config.ConfigExtended;
 import me.fiveeus.rooms.Config.Logger;
 import me.fiveeus.rooms.Rooms;
@@ -11,7 +12,7 @@ import java.util.logging.Level;
 public class ChunkLibrary {
     private final List<Chunk> chunks;
 
-    private String level;
+    private final String level;
 
     private final Rooms plugin;
 
@@ -19,7 +20,9 @@ public class ChunkLibrary {
 
     private ConfigExtended config;
 
-    private Random random;
+    private final Random random;
+
+    private int algorithm;
 
     public ChunkLibrary(String level, Rooms plugin) {
 
@@ -41,6 +44,8 @@ public class ChunkLibrary {
 
         // load config instance for level
         config = new ConfigExtended(plugin, levelFolder, fullName);
+
+        algorithm = config.getInt("algorithm", 1);
 
         // get all schematic files in the directory
         File[] schematicFiles = levelFolder.listFiles((dir, nameF) -> nameF.endsWith(".schem"));
@@ -83,5 +88,15 @@ public class ChunkLibrary {
 
     public void unloadChunks() {
         chunks.clear();
+    }
+
+    public int getAlgorithm() {
+        return algorithm;
+    }
+
+    public Chunk getRandomChunk() {
+
+        return chunks.get(random.nextInt(chunks.size()));
+
     }
 }
